@@ -57,22 +57,16 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	public int deleteCustomer(int customerId) throws DAOException {
-                int result = 0;
-		// Une requête SQL paramétrée
-		String sql = "DELETE FROM CUSTOMER WHERE CUSTOMER_ID = ?";
-		try (   Connection connection = myDataSource.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
-                        ResultSet rs = stmt.executeQuery(sql)
-                ) {
-			if (rs.next()) { // Pas la peine de faire while, il y a 1 seul enregistrement
-				// On récupère le champ NUMBER de l'enregistrement courant
-				result = rs.getInt("NUMBER");
-			}
-		} catch (SQLException ex) {
-			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
-			throw new DAOException(ex.getMessage());
-		}
-                return result;
+            String sql = "DELETE FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+            try( Connection connection = myDataSource.getConnection();
+                 PreparedStatement stmt = connection.prepareStatement(sql)
+            ){
+                stmt.setInt(1, customerId);
+                return stmt.executeUpdate();
+            } catch (SQLException ex){
+                    Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+                    throw new DAOException(ex.getMessage());
+            }
 	}	
 
 	/**
